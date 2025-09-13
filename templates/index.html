@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Syllabus.AI - Study Guide Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Syllabus.AI 🎓</h1>
+        <p>Upload your course materials (PDFs, PPTX, etc.) to automatically generate a study guide.</p>
+        
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" id="file-input" name="files" multiple required>
+            <button type="submit">Generate Guide</button>
+        </form>
+        
+        <div id="loading" style="display: none;">Generating your guide... please wait. 🧠</div>
+        
+        <div id="result-container">
+            <h2>Your Study Guide:</h2>
+            <pre id="result"></pre>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const loadingDiv = document.getElementById('loading');
+            const resultDiv = document.getElementById('result');
+
+            loadingDiv.style.display = 'block'; // Show loading indicator
+            resultDiv.textContent = ''; // Clear previous results
+
+            try {
+                const response = await fetch('/generate-guide', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // --- UPDATED to handle 'study_guide' or 'error' ---
+                    if (data.study_guide) {
+                        resultDiv.textContent = data.study_guide;
+                    } else {
+                        resultDiv.textContent = 'Error: ' + data.error;
+                    }
+                } else {
+                    resultDiv.textContent = 'Error: ' + data.error;
+                }
+
+            } catch (error) {
+                resultDiv.textContent = 'An unexpected error occurred. Please try again.';
+                console.error('Error:', error);
+            } finally {
+                loadingDiv.style.display = 'none'; // Hide loading indicator
+            }
+        });
+    </script>
+</body>
+</html>
