@@ -15,3 +15,6 @@ Backend: Python (Flask)
 
 Frontend: HTML, CSS, JavaScript
 --   AI: OpenAI (GPT-3.5 Turbo)
+
+
+[View Live Deployment on Render](https://syllabus-ai-agent-2.onrender.com/)
